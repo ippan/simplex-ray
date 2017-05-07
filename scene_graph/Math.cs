@@ -31,6 +31,58 @@ namespace SimplexRay
         public IMaterial Material;
     }
 
+    public struct AABB
+    {
+        private Vector3 min;
+        private Vector3 max;
+
+        public AABB(Vector3 min, Vector3 max)
+        {
+            this.min = min;
+            this.max = max;
+        }
+
+        public AABB(AABB box_a, AABB box_b)
+        {
+            min = new Vector3(Math.Min(box_a.Min.X, box_b.Min.X), Math.Min(box_a.Min.Y, box_b.Min.Y), Math.Min(box_a.Min.Z, box_b.Min.Z));
+            max = new Vector3(Math.Max(box_a.Max.X, box_b.Max.X), Math.Max(box_a.Max.Y, box_b.Max.Y), Math.Max(box_a.Max.Z, box_b.Max.Z));
+        }
+
+        public bool Hit(Ray ray, float min_distance, float max_distance)
+        {
+            float t_min = min_distance;
+            float t_max = max_distance;
+
+            float t_min_x = Math.Min((min.X - ray.Origin.X) / ray.Direction.X, (max.X - ray.Origin.X) / ray.Direction.X);
+            float t_max_x = Math.Max((min.X - ray.Origin.X) / ray.Direction.X, (max.X - ray.Origin.X) / ray.Direction.X);
+
+            t_min = Math.Max(t_min, t_min_x);
+            t_max = Math.Min(t_max, t_max_x);
+
+            if (t_max <= t_min)
+                return false;
+
+            float t_min_y = Math.Min((min.Y - ray.Origin.Y) / ray.Direction.Y, (max.Y - ray.Origin.Y) / ray.Direction.Y);
+            float t_max_y = Math.Max((min.Y - ray.Origin.Y) / ray.Direction.Y, (max.Y - ray.Origin.Y) / ray.Direction.Y);
+
+            t_min = Math.Max(t_min, t_min_y);
+            t_max = Math.Min(t_max, t_max_y);
+
+            if (t_max <= t_min)
+                return false;
+
+            float t_min_z = Math.Min((min.Z - ray.Origin.Z) / ray.Direction.Z, (max.Z - ray.Origin.Z) / ray.Direction.Z);
+            float t_max_z = Math.Max((min.Z - ray.Origin.Z) / ray.Direction.Z, (max.Z - ray.Origin.Z) / ray.Direction.Z);
+
+            return Math.Min(t_max, t_max_z) > Math.Max(t_min, t_min_z);
+        }
+
+        public Vector3 Min { get { return min; } }
+        public Vector3 Max { get { return max; } }
+
+
+    }
+
     public static class MathHelper
     {
         private static Random random = new Random();

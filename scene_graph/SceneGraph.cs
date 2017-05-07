@@ -6,6 +6,102 @@ namespace SimplexRay
 {
     internal class SceneGraph : ISceneGraph
     {
+        internal class BVH : IVisualNode
+        {
+            private AABB bounding_box;
+
+            private IVisualNode left_node = null;
+            public IVisualNode right_node = null;
+
+            public BVH(List<IVisualNode> nodes)
+            {
+                if (nodes.Count == 1)
+                {
+                    left_node = nodes[0];
+                    right_node = nodes[0];
+                }
+                else if (nodes.Count == 2)
+                {
+                    left_node = nodes[0];
+                    right_node = nodes[1];
+                }
+                else
+                {
+                    int axis = (int)(MathHelper.RandomFloat() * 3);
+                    if (axis == 0)
+                        nodes.Sort(XCompare);
+                    else if (axis == 1)
+                        nodes.Sort(YCompare);
+                    else 
+                        nodes.Sort(ZCompare);
+                    
+                    List<IVisualNode> left_nodes = new List<IVisualNode>();
+                    for (int i = 0; i < nodes.Count / 2; ++i)
+                        left_nodes.Add(nodes[i]);
+                    
+                    left_node = new BVH(left_nodes);
+
+                    List<IVisualNode> right_nodes = new List<IVisualNode>();
+                    for (int i = nodes.Count / 2; i < nodes.Count; ++i)
+                        right_nodes.Add(nodes[i]);
+
+                    right_node = new BVH(right_nodes);
+                }
+
+                bounding_box = new AABB(left_node.BoundingBox, right_node.BoundingBox);
+            }
+
+            private int XCompare(IVisualNode a, IVisualNode b)
+            {
+                return a.BoundingBox.Min.X.CompareTo(b.BoundingBox.Min.X);
+            }
+
+            private int YCompare(IVisualNode a, IVisualNode b)
+            {
+                return a.BoundingBox.Min.Y.CompareTo(b.BoundingBox.Min.Y);
+            }
+
+            private int ZCompare(IVisualNode a, IVisualNode b)
+            {
+                return a.BoundingBox.Min.Z.CompareTo(b.BoundingBox.Min.Z);
+            }            
+
+            public bool Hit(Ray ray, float min_distance, float max_distance, ref HitData hit_data)
+            {
+                if (!bounding_box.Hit(ray, min_distance, max_distance))
+                    return false;
+                
+                HitData left_hit_data = new HitData();
+                HitData right_hit_data = new HitData();
+
+                bool left_hit = left_node.Hit(ray, min_distance, max_distance, ref left_hit_data);
+                bool right_hit = right_node.Hit(ray, min_distance, max_distance, ref right_hit_data);
+                
+                if (left_hit && right_hit)
+                {
+                    hit_data = left_hit_data.Distance < right_hit_data.Distance ? left_hit_data : right_hit_data;
+                    return true;
+                }
+
+                if (left_hit)
+                {
+                    hit_data = left_hit_data;
+                    return true;
+                }
+
+                if (right_hit)
+                {
+                    hit_data = right_hit_data;
+                    return true;
+                }
+
+                return false;
+            }
+
+            public AABB BoundingBox { get { return bounding_box; } }
+
+        }
+
         const float MAX_HIT_DISTANCE = 1000000.0f;
 
         protected List<IVisualNode> visual_nodes = new List<IVisualNode>();
@@ -67,7 +163,9 @@ namespace SimplexRay
         }
 
         public bool Hit(Ray ray, float min_distance, float max_distance, ref HitData hit_data)
-        {
+        {            
+            return bvh.Hit(ray, min_distance, max_distance, ref hit_data);
+            /*
             HitData temp_hit_data = new HitData();
             float closest_hit_distance = max_distance;
 
@@ -84,21 +182,23 @@ namespace SimplexRay
                 hit = true;
                 closest_hit_distance = temp_hit_data.Distance;
 
-                hit_data.Distance = temp_hit_data.Distance;
-                hit_data.Normal = temp_hit_data.Normal;
-                hit_data.Point = temp_hit_data.Point;
-                hit_data.Material = temp_hit_data.Material;
+                hit_data = temp_hit_data;
             }
 
             return hit;
+            */
         }        
+
+        private BVH bvh = null;
 
         public Image Render(ICameraNode camera, int sample, int max_depth)
         {            
+            bvh = new BVH(new List<IVisualNode>(visual_nodes));
+
             if (sample < 1)
                 sample = 1;
 
-            Image image = new Image(camera.View.Width, camera.View.Height);
+            Image image = new Image(camera.View.Width, camera.View.Height);            
 
             Vector2 half_size = new Vector2(camera.View.Width / 2.0f, camera.View.Height / 2.0f);
 

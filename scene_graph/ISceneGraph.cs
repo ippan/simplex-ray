@@ -21,12 +21,17 @@ namespace SimplexRay
         Vector3 Scale { get; set; }
     }
 
-    public interface IVisualNode : ISceneNode
+    public interface IHitableNode
     {
         bool Hit(Ray ray, float min_distance, float max_distance, ref HitData hit_data);
+        AABB BoundingBox { get; }        
     }
 
-    public interface IShapeNode : IVisualNode
+    public interface IVisualNode : IHitableNode
+    {
+    }
+
+    public interface IShapeNode : IVisualNode, ISceneNode
     {
         Shape Shape { get; }
 

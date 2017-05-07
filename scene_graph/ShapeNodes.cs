@@ -44,6 +44,14 @@ namespace SimplexRay
 
             return false;
         }
+
+        public AABB BoundingBox 
+        { 
+            get 
+            {
+                return new AABB(Translation - new Vector3(Radius), Translation + new Vector3(Radius));
+            } 
+        }
     }
 
 }
