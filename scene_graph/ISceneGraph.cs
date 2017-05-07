@@ -12,6 +12,11 @@ namespace SimplexRay
         string TypeName { get; }
     }
 
+    public interface ITexture
+    {
+        Vector3 Value(float u, float v, Vector3 point);
+    }
+
     public interface ISceneNode
     {
         Vector3 Translation { get; set; }

@@ -16,8 +16,8 @@ namespace SimplexRay
         private static void Init()
         {
             material_scatters = new Dictionary<string, IMaterialScatter>();
-            AddScatter(new LambertianMaterial(Vector3.Zero), new LambertianScatter());
-            AddScatter(new MetalMaterial(Vector3.Zero, 0.0f), new MetalScatter());
+            AddScatter(new LambertianMaterial(null), new LambertianScatter());
+            AddScatter(new MetalMaterial(null, 0.0f), new MetalScatter());
             AddScatter(new DielectricMaterial(0.0f), new DielectricScatter());
         }
 
@@ -49,7 +49,7 @@ namespace SimplexRay
 
             Vector3 direction = hit_data.Normal + MathHelper.RandomInUnitSPhere();
             scattered = new Ray(hit_data.Point, direction);
-            attenuation = lambertian_material.Albedo;
+            attenuation = lambertian_material.Albedo.Value(hit_data.UV.X, hit_data.UV.Y, hit_data.Point);
 
             return true;
         }
@@ -63,7 +63,7 @@ namespace SimplexRay
 
             Vector3 reflected = Vector3.Reflect(ray.Direction, hit_data.Normal);
             scattered = new Ray(hit_data.Point, reflected + metal_material.Fuzz * MathHelper.RandomInUnitSPhere());
-            attenuation = metal_material.Albedo;
+            attenuation = metal_material.Albedo.Value(hit_data.UV.X, hit_data.UV.Y, hit_data.Point);
 
             return Vector3.Dot(scattered.Direction, hit_data.Normal) > 0;
         }

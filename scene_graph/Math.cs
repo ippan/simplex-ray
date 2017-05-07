@@ -28,6 +28,8 @@ namespace SimplexRay
 
         public Vector3 Normal;
 
+        public Vector2 UV;
+        
         public IMaterial Material;
     }
 

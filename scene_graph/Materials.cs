@@ -5,9 +5,9 @@ namespace SimplexRay
 {
     public class LambertianMaterial : IMaterial
     {
-        public Vector3 Albedo;
+        public ITexture Albedo;
 
-        public LambertianMaterial(Vector3 albedo)
+        public LambertianMaterial(ITexture albedo)
         {
             Albedo = albedo;
         }
@@ -17,10 +17,10 @@ namespace SimplexRay
 
     public class MetalMaterial : IMaterial
     {
-        public Vector3 Albedo;
+        public ITexture Albedo;
         public float Fuzz;
 
-        public MetalMaterial(Vector3 albedo, float fuzz = 0.3f)
+        public MetalMaterial(ITexture albedo, float fuzz = 0.3f)
         {
             Albedo = albedo;
             Fuzz = fuzz;

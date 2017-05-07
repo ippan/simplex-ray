@@ -29,9 +29,11 @@ namespace SimplexRay
         {            
             ISceneGraph scene_graph = SceneGraphFactory.Create();
 
+            ITexture checker_texture = new CheckerTexture(new ConstantTexture(new Vector3(0.2f, 0.3f, 0.1f)), new ConstantTexture(new Vector3(0.9f, 0.9f, 0.9f)));
+
             IShapeNode sphere = scene_graph.AddShape(Shape.Sphere);
             sphere.Translation = new Vector3(0.0f, -1000.0f, 0.0f);
-            sphere.Material = new LambertianMaterial(new Vector3(0.5f, 0.5f, 0.5f));
+            sphere.Material = new LambertianMaterial(checker_texture);
             sphere.Scale = new Vector3(2000.0f);
 
             sphere = scene_graph.AddShape(Shape.Sphere);
@@ -41,12 +43,12 @@ namespace SimplexRay
             
             sphere = scene_graph.AddShape(Shape.Sphere);
             sphere.Translation = new Vector3(-4.0f, 1.0f, 0.0f);
-            sphere.Material = new LambertianMaterial(new Vector3(0.4f, 0.2f, 0.1f));
+            sphere.Material = new LambertianMaterial(new ConstantTexture(new Vector3(0.4f, 0.2f, 0.1f)));
             sphere.Scale = new Vector3(2.0f);
 
             sphere = scene_graph.AddShape(Shape.Sphere);
             sphere.Translation = new Vector3(4.0f, 1.0f, 0.0f);
-            sphere.Material = new MetalMaterial(new Vector3(0.7f, 0.6f, 0.5f), 0.0f);
+            sphere.Material = new MetalMaterial(new ConstantTexture(new Vector3(0.7f, 0.6f, 0.5f)), 0.0f);
             sphere.Scale = new Vector3(2.0f);
 
             for (int z = -10; z <= 10; ++z)
@@ -64,11 +66,11 @@ namespace SimplexRay
 
                         if (choose_material < 0.8f)
                         {
-                            ball.Material = new LambertianMaterial(new Vector3(MathHelper.RandomFloat() * MathHelper.RandomFloat(), MathHelper.RandomFloat() * MathHelper.RandomFloat(), MathHelper.RandomFloat() * MathHelper.RandomFloat()));
+                            ball.Material = new LambertianMaterial(new ConstantTexture(new Vector3(MathHelper.RandomFloat() * MathHelper.RandomFloat(), MathHelper.RandomFloat() * MathHelper.RandomFloat(), MathHelper.RandomFloat() * MathHelper.RandomFloat())));
                         }
                         else if (choose_material < 0.95f)
                         {
-                            ball.Material = new MetalMaterial(new Vector3(1.0f + MathHelper.RandomFloat(), 1.0f + MathHelper.RandomFloat(), 1.0f + MathHelper.RandomFloat()) * 0.5f, 0.5f * MathHelper.RandomFloat());
+                            ball.Material = new MetalMaterial(new ConstantTexture(new Vector3(1.0f + MathHelper.RandomFloat(), 1.0f + MathHelper.RandomFloat(), 1.0f + MathHelper.RandomFloat()) * 0.5f), 0.5f * MathHelper.RandomFloat());
                         }
                         else
                         {

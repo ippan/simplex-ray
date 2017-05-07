@@ -23,6 +23,11 @@ namespace SimplexRay
             hit_data.Normal = (hit_data.Point - Translation) / Radius;
             hit_data.Material = Material;
 
+            float phi = (float)Math.Atan2(hit_data.Point.Z, hit_data.Point.X);
+            float theta = (float)Math.Asin(hit_data.Point.Y);
+            hit_data.UV.X = 1 - (phi + (float)Math.PI) / (float)(2.0f * Math.PI);
+            hit_data.UV.Y = (theta + (float)Math.PI / 2.0f) / (float)Math.PI;
+
             return true;
         }
 
