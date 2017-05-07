@@ -56,6 +56,6 @@ namespace SimplexRay
 
         bool Hit(Ray ray, float min_distance, float max_distance, ref HitData hit_data);
 
-        void Render(ICameraNode camera, int sample = 1, int max_depth = 50);
+        Image Render(ICameraNode camera, int sample = 1, int max_depth = 50);
     }
 }

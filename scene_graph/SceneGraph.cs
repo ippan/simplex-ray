@@ -93,14 +93,12 @@ namespace SimplexRay
             return hit;
         }        
 
-        public void Render(ICameraNode camera, int sample, int max_depth)
+        public Image Render(ICameraNode camera, int sample, int max_depth)
         {            
             if (sample < 1)
                 sample = 1;
 
-            Console.WriteLine("P3");
-            Console.WriteLine("{0} {1}", camera.View.Width, camera.View.Height);
-            Console.WriteLine("255");
+            Image image = new Image(camera.View.Width, camera.View.Height);
 
             Vector2 half_size = new Vector2(camera.View.Width / 2.0f, camera.View.Height / 2.0f);
 
@@ -122,10 +120,11 @@ namespace SimplexRay
 
                     color /= sample;
 
-                    Console.WriteLine("{0} {1} {2}", (int)(255.99f * color.X), (int)(255.99f * color.Y), (int)(255.99f * color.Z));
+                    image[x, y] = color;
                 }
             }
 
+            return image;
         }
     }
 
