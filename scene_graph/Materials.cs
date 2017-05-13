@@ -40,4 +40,16 @@ namespace SimplexRay
 
         public string TypeName { get { return "Dielectric"; } }
     }
+
+    public class DiffuseLightMaterial : IMaterial
+    {
+        public ITexture Emit;
+
+        public DiffuseLightMaterial(ITexture emit)
+        {
+            Emit = emit;
+        }
+
+        public string TypeName { get { return "DiffuseLight"; } }
+    }
 }

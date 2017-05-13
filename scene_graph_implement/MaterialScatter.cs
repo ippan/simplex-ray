@@ -7,6 +7,7 @@ namespace SimplexRay
     internal interface IMaterialScatter
     {
         bool Scatter(IMaterial material, Ray ray, HitData hit_data, ref Vector3 attenuation, ref Ray scattered);
+        Vector3 Emit(IMaterial material, Ray ray, HitData hit_data);
     }
 
     internal static class MaterialScatters
@@ -19,6 +20,7 @@ namespace SimplexRay
             AddScatter(new LambertianMaterial(null), new LambertianScatter());
             AddScatter(new MetalMaterial(null, 0.0f), new MetalScatter());
             AddScatter(new DielectricMaterial(0.0f), new DielectricScatter());
+            AddScatter(new DiffuseLightMaterial(null), new DiffuseLightScatter());
         }
 
         private static void AddScatter(IMaterial material, IMaterialScatter scatter)
@@ -38,7 +40,6 @@ namespace SimplexRay
         {
             return GetMaterialScatter(material.TypeName);
         }
-
     }
 
     internal class LambertianScatter : IMaterialScatter
@@ -53,6 +54,8 @@ namespace SimplexRay
 
             return true;
         }
+
+        public Vector3 Emit(IMaterial material, Ray ray, HitData hit_data) { return Vector3.Zero; }
     }
 
     internal class MetalScatter : IMaterialScatter
@@ -67,6 +70,8 @@ namespace SimplexRay
 
             return Vector3.Dot(scattered.Direction, hit_data.Normal) > 0;
         }
+
+        public Vector3 Emit(IMaterial material, Ray ray, HitData hit_data) { return Vector3.Zero; }
     }
 
     internal class DielectricScatter : IMaterialScatter
@@ -119,6 +124,23 @@ namespace SimplexRay
             return true;
         }
 
+        public Vector3 Emit(IMaterial material, Ray ray, HitData hit_data) { return Vector3.Zero; }
     }
+
+
+    internal class DiffuseLightScatter : IMaterialScatter
+    {
+        public bool Scatter(IMaterial material, Ray ray, HitData hit_data, ref Vector3 attenuation, ref Ray scattered)
+        {
+            return false;
+        }
+
+        public Vector3 Emit(IMaterial material, Ray ray, HitData hit_data) 
+        { 
+            DiffuseLightMaterial diffuse_light_material = material as DiffuseLightMaterial;
+            return diffuse_light_material.Emit.Value(hit_data.UV.X, hit_data.UV.Y, hit_data.Point);
+        }
+    }
+
 
 }

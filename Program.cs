@@ -42,6 +42,11 @@ namespace SimplexRay
             sphere.Scale = new Vector3(2.0f);
             
             sphere = scene_graph.AddShape(Shape.Sphere);
+            sphere.Translation = new Vector3(0.0f, 3.0f, 0.0f);
+            sphere.Material = new DiffuseLightMaterial(new ConstantTexture(new Vector3(3.0f, 3.0f, 3.0f)));
+            sphere.Scale = new Vector3(2.0f);            
+
+            sphere = scene_graph.AddShape(Shape.Sphere);
             sphere.Translation = new Vector3(-4.0f, 1.0f, 0.0f);
             sphere.Material = new LambertianMaterial(new ConstantTexture(new Vector3(0.4f, 0.2f, 0.1f)));
             sphere.Scale = new Vector3(2.0f);

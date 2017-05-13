@@ -141,14 +141,15 @@ namespace SimplexRay
 
                 IMaterialScatter material_scatter = MaterialScatters.GetMaterialScatter(hit_data.Material);
 
+                Vector3 emit = material_scatter.Emit(hit_data.Material, ray, hit_data);
+
                 if (depth < max_depth && material_scatter.Scatter(hit_data.Material, ray, hit_data, ref attenuation, ref scattered))
-                    return attenuation * Color(scattered, depth + 1, max_depth);
+                    return emit + attenuation * Color(scattered, depth + 1, max_depth);
                 else
-                    return Vector3.Zero;
+                    return emit;
             }
 
-            float t = 0.5f * (ray.Direction.Y + 1.0f);
-            return (1.0f - t) * Vector3.One + t * new Vector3(0.5f, 0.7f, 1.0f);
+            return Vector3.Zero;
         }
 
         protected Vector3 RandomInUnitSPhere()
