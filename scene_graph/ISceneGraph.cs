@@ -22,8 +22,6 @@ namespace SimplexRay
         Vector3 Translation { get; set; }
 
         Quaternion Rotation { get; set; }
-
-        Vector3 Scale { get; set; }
     }
 
     public interface IHitableNode

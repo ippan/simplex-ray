@@ -4,14 +4,13 @@ using System.Numerics;
 namespace SimplexRay
 {
 
-    internal class SphereNode : SceneNode, IShapeNode
+    public class SphereNode : SceneNode, IShapeNode
     {
         public Shape Shape { get { return Shape.Sphere; } }
 
         public IMaterial Material { get; set; }
 
-        // only support uniform scale
-        protected float Radius { get { return Scale.X / 2.0f; } }
+        public float Radius = 0.5f;
 
         protected bool FillHitData(float root, Ray ray, float min_distance, float max_distance, ref HitData hit_data)
         {
